@@ -30,3 +30,18 @@ if __name__ == "__main__":
     model, processor = load_model()
     print("Model loaded successfully")
     print(f"Model memory footprint: {model.get_memory_footprint() / 1e9:.2f} GB")
+
+
+    '''AutoModelForImageTextToText : A Hugging Face "Auto" class that automatically loads the correct model architecture
+                                     for image-to-text / vision-language models based on the model ID you give it. Instead 
+                                     of you needing to know the exact class name for Qwen3-VL specifically, this class inspects 
+                                     the model's config on Hugging Face Hub and picks the right architecture automatically.'''
+
+    '''AutoProcessor : Loads the model's processor — the component that converts your raw inputs (images, text prompts) into the 
+                       tensor format the model expects, and converts the model's output tokens back into readable text. For a VLM, 
+                       this handles both image preprocessing (resizing, normalization) and text tokenization in one object'''
+
+    ''' BitsAndBytesConfig : Configuration object for quantization — compressing the model's weights to lower precision 
+                             (e.g. 4-bit instead of the usual 16/32-bit) to drastically cut GPU memory usage, at a small 
+                             cost to accuracy. This is what lets a 2B-parameter model fit comfortably in a few GB of VRAM 
+                             instead of needing much more.'''

@@ -21,31 +21,31 @@ total frames = 15 x 30 = 450frames
 Extracted frames at interval 30 = 450/30 = 15
 '''
 def extract_frames(video_path, interval):
-    cap = cv2.VideoCapture(video_path)
+    cap = cv2.VideoCapture(video_path) # opens a video file so you can read frames from it
     extracted_frames = []
     frame_number = 0
 
     while True:
-        success = cap.grab()
-        if not success:
+        success = cap.grab() # Grabs the raw frame in the video without decoding it,rreturn true/false but does not give actual frame
+        if not success: # break when video is endedd as grab not able to take frame so returns false
             break
 
-        if frame_number % interval == 0:
-            ret, frame = cap.retrieve()
+        if frame_number % interval == 0: 
+            ret, frame = cap.retrieve() #ret ->shows wheather the decoding is successfull or not, frame -> stores numpy array of the image
             if not ret:
                 break
-            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            pil_image = Image.fromarray(frame_rgb)
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) # converts the standard opencv format from BGR to RGB
+            pil_image = Image.fromarray(frame_rgb) # converts an numpy array into PIL image object which is used by most VLM libraries like qwen instead of raw array
 
             extracted_frames.append({
-                "frame_number": frame_number,
-                "rgb_image": frame_rgb,
-                "pil_image": pil_image,
+                "frame_number": frame_number, # position of the frame
+                "rgb_image": frame_rgb, # the raw array in RGB format
+                "pil_image": pil_image, # PIL-wrapped version of the same frame, ready to hand directly to VLM
             })
 
         frame_number += 1
 
-    cap.release()
+    cap.release() # now we are not accessing the video, we have released the jutsu
     return extracted_frames
 
 

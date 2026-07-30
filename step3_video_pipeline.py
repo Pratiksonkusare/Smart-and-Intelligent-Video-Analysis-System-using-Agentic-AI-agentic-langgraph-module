@@ -20,11 +20,6 @@ def analyze_video(video_path,interval = 30):
 
         raw_response = analyze_frame(model,processor,pil_image)
         
-        print("--- RAW TEXT LENGTH CHECK ---")
-        print(f"Character count: {len(raw_response)}")
-        print(raw_response)
-        print("--- END ---")
-        
         parsed = parse_vlm_response(raw_response)
 
         parsed["frame_number"] = frame_number
