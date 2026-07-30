@@ -1,6 +1,7 @@
 import torch
 from transformers import AutoModelForImageTextToText, AutoProcessor, BitsAndBytesConfig
 
+
 MODEL_ID = "Qwen/Qwen3-VL-2B-Instruct"
 
 '''Here we have 2 billion parameters in this model,
