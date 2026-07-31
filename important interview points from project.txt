@@ -1,0 +1,17 @@
+VLMs are trained heavily on descriptive image-captioning data, so their default instinct is to describe what's in the image. A system prompt saying "don't do X" is often weaker than one that gives the model an explicit alternative framing for how to talk about the same visual information without naming the subject.
+
+This is exactly the kind of thing worth being able to say in an interview: "My first prompt attempt technically worked but leaked scene-referencing language like 'figure' — so I iterated on the prompt to eliminate that." That's a much stronger story than "it just worked first try," because it shows you actually tested and validated the constraint rather than assuming it.
+
+
+interview too: "I scoped Real-ESRGAN for the MVP, but designed the decision layer to route to different restoration models per defect type as a next step" — shows forward-thinking architecture without overclaiming what's built.
+
+Good news on the privacy front — even with what you're calling a "good image" (presumably one with a person or scene content actually visible), there's still zero scene-content leakage. No "figure," "subject," "person," nothing. That's a solid, repeated result across three different test images now — a real, testable claim you can make in an interview: "I validated the privacy constraint held even on frames with a visible person in them."
+
+For now, given your timeline, we can note this as a known limitation rather than perfecting it endlessly — that's an honest, defensible engineering tradeoff to state in an interview: "I identified this could still leak on certain content types and would harden it further with more few-shot examples given more time."
+
+Ha, there it is — that's the GPU actually being used this time, and it's a great, concrete before/after to remember: same code, same model, just moved from CPU to GPU, and the speed difference is night and day. That's a genuinely good thing to be able to describe in an interview too — "I diagnosed a CPU/GPU mismatch caused by a package install silently swapping my PyTorch build, traced it through torch.cuda.is_available() checks, and fixed it by reinstalling the matched CUDA build" — that's real debugging, not just "I followed a tutorial."
+
+
+our earlier fixes (spatial-only description rule, stronger example) reduced the leak rate but didn't eliminate it — on a real 30-second video with an actual person/vehicle moving through frame, it leaks in roughly 3 out of 15 frames (20%). That's genuinely useful, honest data to have: "I measured my privacy constraint's failure rate empirically at ~20% on real footage and identified it as a known limitation" is a much stronger interview answer than pretending it's airtight.
+
+Worst-case is usually the right choice for a quality-control/surveillance tool — you'd rather over-flag a video that has one bad segment than average it away and miss a real problem. This is a good design decision to be able to justify in an interview: "I chose worst-case aggregation because for a surveillance tool, missing a genuinely bad frame is worse than a false positive."
