@@ -2,6 +2,7 @@ from Step1_video_basics import extract_frames
 from step2_vlm_inference import load_model,analyze_frame
 from step3_parser import parse_vlm_response
 from step4_aggregator import aggregate_results
+from step5_decision_agent import should_enhance
 
 
 def analyze_video(video_path,interval = 30):
@@ -37,8 +38,11 @@ if __name__ == "__main__":
     video_path = sys.argv[1]
     results = analyze_video(video_path, interval=30)
 
-    print("\n---ALL FRAME RESULT---")
-    print(json.dumps(results,indent=2)) 
+    print("\n ---ENHANCEMENT DECISION PER FRAME---")
+    for frame_result in results:
+        decision,reason = should_enhance(frame_result)
+        print(f"Frame {frame_result['frame_number']}:{decision} - {reason}")
     
     video_summary = aggregate_results(results)
+    print("\n VIDEO-LEVEL SUMMARY")
     print(json.dumps(video_summary, indent=2))

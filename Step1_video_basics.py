@@ -20,6 +20,24 @@ total frames = 15 x 30 = 450frames
 
 Extracted frames at interval 30 = 450/30 = 15
 '''
+
+MAX_DIMENSION = 1024  # cap the longest side to this many pixels
+
+def resize_for_vlm(pil_image, max_dim=MAX_DIMENSION):
+    width, height = pil_image.size
+    if max(width, height) <= max_dim:
+        return pil_image  # already small enough, no change needed
+
+    if width > height:
+        new_width = max_dim
+        new_height = int(height * (max_dim / width))
+    else:
+        new_height = max_dim
+        new_width = int(width * (max_dim / height))
+
+    return pil_image.resize((new_width, new_height), Image.LANCZOS)
+
+
 def extract_frames(video_path, interval):
     cap = cv2.VideoCapture(video_path) # opens a video file so you can read frames from it
     extracted_frames = []
@@ -36,7 +54,8 @@ def extract_frames(video_path, interval):
                 break
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) # converts the standard opencv format from BGR to RGB
             pil_image = Image.fromarray(frame_rgb) # converts an numpy array into PIL image object which is used by most VLM libraries like qwen instead of raw array
-
+            pil_image = resize_for_vlm(pil_image)
+            
             extracted_frames.append({
                 "frame_number": frame_number, # position of the frame
                 "rgb_image": frame_rgb, # the raw array in RGB format

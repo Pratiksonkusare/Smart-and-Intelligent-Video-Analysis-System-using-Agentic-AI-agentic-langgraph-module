@@ -1,35 +1,38 @@
 SEVERITY_RANK = {"None":0,"Low":1,"Medium":2,"High":3,"Unknown":0}
 CATEGORIES = ["Blur","Noise","Compression","Lighting"]
 
-def aggregate_results(frame_results):
+def aggregate_results(frame_results, total_video_frames=None):
     """
-    Take the list of per-frame parsed dicts and collapes them into
-    one video-level summary per defect category"""
-
-    summary={}
+    total_video_frames: the TRUE total frame count of the video (e.g. 1116),
+    not just len(frame_results) -- since frame_results may only be the
+    VLM-checked candidates after Stage 1 filtering.
+    """
+    summary = {}
+    denominator = total_video_frames if total_video_frames else len(frame_results)
 
     for category in CATEGORIES:
-        frame_present=[]
+        frames_present = []
         worst_severity = "None"
         worst_rank = 0
 
         for frame in frame_results:
             info = frame[category]
             if info["present"]:
-                frame_present.append(frame["frame_number"])
-
-            rank = SEVERITY_RANK.get(info["severity"],0)
-            if rank>worst_rank:
+                frames_present.append(frame["frame_number"])
+            rank = SEVERITY_RANK.get(info["severity"], 0)
+            if rank > worst_rank:
                 worst_rank = rank
                 worst_severity = info["severity"]
-        total_frames = len(frame_results)
+
         summary[category] = {
-            "worst_severity" : worst_severity,
-            "frame_affected":len(frame_present),
-            "total_frames":total_frames,
-            "percent_affected":round(100*len(frame_present)/total_frames,1),
-            "affected_frame_numbers" : frame_present
+            "worst_severity": worst_severity,
+            "frames_affected": len(frames_present),
+            "total_frames_in_video": denominator,
+            "frames_checked_by_vlm": len(frame_results),
+            "percent_of_video_affected": round(100 * len(frames_present) / denominator, 1),
+            "affected_frame_numbers": frames_present,
         }
+
     return summary
 
 if __name__ == "__main__":
