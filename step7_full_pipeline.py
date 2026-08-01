@@ -22,6 +22,7 @@ def run_full_pipeline(video_path):
 
     print("\nStage 2: VLM diagnosis (candidates only)...")
     model, processor = load_model()
+    print("Model loaded successfully. Starting frame analysis...")
 
     vlm_results = []
     for idx, frame in enumerate(candidate_frames):
